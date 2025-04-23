@@ -21,8 +21,12 @@ class OrgWorld : public emp::World<Organism> {
     ~OrgWorld() {
     }
 
-    //This function removes the organism at position i and returns it
+    
     emp::Ptr<Organism> ExtractOrganism(int i) {
+        /*
+            Extracts the organism at position i from the population.
+            Returns a pointer to the organism.
+        */
         emp::Ptr<Organism> org = pop[i];
         pop[i] = nullptr;
         return org;
@@ -31,7 +35,7 @@ class OrgWorld : public emp::World<Organism> {
     int moveOrg(int i) {
         /*
             Moves the organism at position i according to its species.
-            grass can't move
+            grass can't move.
             goats eat the grass at the cell they move to (if there is any grass there)
         */
         emp::Ptr<Organism> org = ExtractOrganism(i);

@@ -20,11 +20,12 @@ class AEAnimator : public emp::web::Animate {
 
     //create a canvas
     emp::web::Canvas canvas{width, height, "canvas"};
+    //create a place to put information aboutt the simulation
+    emp::web::Div info_div; 
 
     private:
         emp::Random random{5};
         OrgWorld world{random};
-
 
     public:
 
@@ -35,32 +36,54 @@ class AEAnimator : public emp::web::Animate {
         doc << GetToggleButton("Toggle");
         doc << GetStepButton("Step");
 
+        // Add info panel
+        doc << info_div;
+        info_div << "<h3>Species Info</h3>";
+        info_div << "Here we have a simple world with two species: grass and goats. ";
+        info_div << "The grass is green and the goats are brown. The goats eat the grass to collect enough energy to stay alive and replicate. ";
+        info_div << "<h4>Grass</h4>";
+        info_div << "Grass is green and grows in empty tiles. It can reproduce if it has enough points. ";
+        info_div << "Specifically, the grass gains 200 points each update, and it needs 400 points to reproduce. ";
+        info_div << "<h4>Goats</h4>";
+        info_div << "Goats are brown and move randomly around the world. ";
+        info_div << "They eat grass to gain energy, and they gain the amount of points that the grass had. ";
+        info_div << "The goats reproduce if they have more than 1000 points. ";
+        info_div << "They then create an offspring that starts with 150 points. ";
+        info_div << "The goats also lose 50 points each update, so they need to eat grass to survive. ";
+        info_div << "If they reach 0 points, they die. ";
+        info_div << "<h4>Simulation</h4>";
+        info_div << "The simulation runs at 60 frames per second. You can pause it and step through it one frame at a time. ";
+        info_div << "<h4>Controls</h4>";
+        info_div << "Click the 'Start' button to start the simulation. Click it again to pause it. ";
+        info_div << "Click the 'Step' button to step through the simulation one frame at a time. ";
+        
+
         // set up the starting grid
         world.Resize(num_h_boxes, num_w_boxes);
-        //create fcn seedWorld. More initial cells. Use random to place them
+        //seed the world with some grass and goats to start
         seedWorld();
-        /* world.AddOrgAt(new Grass(&random), 0);
-        world.AddOrgAt(new Grass(&random), 2);
-        world.AddOrgAt(new Grass(&random), 11);
-        world.AddOrgAt(new Grass(&random), 13);
-        world.AddOrgAt(new Goat(&random, 1000), 1); //a full adult - tune
-        world.AddOrgAt(new Goat(&random, 1000), 19); //a full adult - tune */
         world.SetPopStruct_Grid(num_w_boxes, num_h_boxes);
     }
 
     void seedWorld() {
-        //seed the world with some grass and goats
+        /*
+            seed the world with some grass and goats to start according to some initial probabilities
+        */
+        float prob_grass = 0.1;
+        float prob_goat = 0.03;
         for (int i = 0; i < num_w_boxes * num_h_boxes; i++) {
-            if (random.GetDouble() < 0.1) {
+            if (random.GetDouble() < prob_grass) {
                 world.AddOrgAt(new Grass(&random), i);
-            } else if (random.GetDouble() < 0.03) {
-                world.AddOrgAt(new Goat(&random, 1000), i);
+            } else if (random.GetDouble() < prob_goat) {
+                world.AddOrgAt(new Goat(&random, 1000), i); //start the goats with 1000 points to give it a chance to survive
             }
         }
     }
 
     void DoFrame() override {
-        /*apply the rules of the world*/
+        /*
+            apply the rules of the world
+        */
         canvas.Clear();
 
         if (update_count != 0){
@@ -68,7 +91,6 @@ class AEAnimator : public emp::web::Animate {
             world.Update();
         }
 
-        //abstract this at some point..?
         //draw the grid
         int org_num = 0;
         for (int x = 0; x < num_w_boxes; x++){
@@ -76,7 +98,6 @@ class AEAnimator : public emp::web::Animate {
                 if (world.IsOccupied(org_num)) {
                     Organism &org = world.GetOrg(org_num);
                     int species = org.GetSpecies();
-                    //::std::cout << species << std::endl;
                     if (species == 0) {
                         canvas.Rect(x * RECT_SIDE, y * RECT_SIDE, RECT_SIDE, RECT_SIDE, "green", "black");
                     } else if (species == 1) {

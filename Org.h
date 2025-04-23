@@ -16,7 +16,7 @@ class Organism {
         points(_points), random(_random) {;}
 
     void SetPoints(double _pts) {points = _pts;}
-    void AddPoints(double _pts) {points += _pts;} //GO THROUGH AND ADD THIS WHERE POSSIBLE
+    void AddPoints(double _pts) {points += _pts;} 
     int GetPoints() {return points;}
 
     void SetHasMoved(bool val) { has_moved = val; }
@@ -24,7 +24,7 @@ class Organism {
 
     //these are just placeholders - will be implemented by each species
     virtual void Process(){
-        SetPoints(GetPoints() + 1000);
+        AddPoints(1000);
     };
     virtual emp::Ptr<Organism> CheckReproduction(){
         return nullptr;
@@ -34,4 +34,5 @@ class Organism {
     };
 
 };
+
 #endif
