@@ -1,36 +1,39 @@
 #ifndef GOAT_H
 #define GOAT_H
 
-#include "emp/math/random_utils.hpp"
-#include "emp/math/Random.hpp"
-
 #include "Org.h"
 
-class Goat : public Organism{
+/**
+ * Goat species - mobile herbivore.
+ * Consumes energy over time, eats grass to survive and reproduce.
+ */
+class Goat : public Organism {
+public:
+    Goat(emp::Ptr<emp::Random> _random, double _points = 0.0)
+        : Organism(_random, _points) {}
 
-    public:
-        Goat(emp::Ptr<emp::Random> _random, double _points=0.0) : Organism(_random, _points) {;}
+    /** Goats lose energy each update cycle. */
+    void Process() override {
+        AddPoints(-50);  
+    }
 
-        void Process() override {
-            AddPoints(-50); //looses some energy each step - needs to eat to survive
+    /** Species ID for goats is 1. */
+    int GetSpecies() const override {
+        return 1;
+    }
+
+    /** Reproduce if enough energy is available. Offspring starts with some energy. */
+    emp::Ptr<Organism> CheckReproduction() override {
+        if (points > 1000) {
+            emp::Ptr<Goat> offspring = new Goat(*this);
+            offspring->SetPoints(150);  // Give offspring a small starting reserve
+            points -= 1000;
+            SetPoints(points);
+            ::std::cout << "Reproducing!" << std::endl;
+            return offspring;
         }
-
-        int GetSpecies() override {return 1;}
-
-        emp::Ptr<Organism> CheckReproduction() override{
-            int points = GetPoints();
-            if (points > 1000) {
-                emp::Ptr<Goat> offspring = new Goat(*this);
-                offspring->SetPoints(150); //needs some time to find food before it is killed off
-                points -= 1000;
-                SetPoints(points);
-                ::std::cout << "Reproducing!" << std::endl;
-                return offspring;
-            } else {
-                return nullptr;
-            }
-            
-        }
+        return nullptr;
+    }
 };
 
 #endif

@@ -42,10 +42,10 @@ class AEAnimator : public emp::web::Animate {
         info_div << "Here we have a simple world with two species: grass and goats. ";
         info_div << "The grass is green and the goats are brown. The goats eat the grass to collect enough energy to stay alive and replicate. ";
         info_div << "<h4>Grass</h4>";
-        info_div << "Grass is green and grows in empty tiles. It can reproduce if it has enough points. ";
+        info_div << "Grass is green and grows in empty tiles. It cannot move around, but it can reproduce if it has enough points. ";
         info_div << "Specifically, the grass gains 200 points each update, and it needs 400 points to reproduce. ";
         info_div << "<h4>Goats</h4>";
-        info_div << "Goats are brown and move randomly around the world. ";
+        info_div << "Goats are brown and move randomly around the world. If they move onto a tile with grass, they eat it. ";
         info_div << "They eat grass to gain energy, and they gain the amount of points that the grass had. ";
         info_div << "The goats reproduce if they have more than 1000 points. ";
         info_div << "They then create an offspring that starts with 150 points. ";
@@ -67,7 +67,7 @@ class AEAnimator : public emp::web::Animate {
 
     void seedWorld() {
         /*
-            seed the world with some grass and goats to start according to some initial probabilities
+        * seed the world with some grass and goats to start according to some initial probabilities
         */
         float prob_grass = 0.1;
         float prob_goat = 0.03;
@@ -82,7 +82,7 @@ class AEAnimator : public emp::web::Animate {
 
     void DoFrame() override {
         /*
-            apply the rules of the world
+        * apply the rules of the world
         */
         canvas.Clear();
 
@@ -102,8 +102,6 @@ class AEAnimator : public emp::web::Animate {
                         canvas.Rect(x * RECT_SIDE, y * RECT_SIDE, RECT_SIDE, RECT_SIDE, "green", "black");
                     } else if (species == 1) {
                         canvas.Rect(x * RECT_SIDE, y * RECT_SIDE, RECT_SIDE, RECT_SIDE, "brown", "black");
-                    } else if (species == -1){ //FOR DEBUGGING, REMOVE LATER
-                        canvas.Rect(x * RECT_SIDE, y * RECT_SIDE, RECT_SIDE, RECT_SIDE, "red", "black");
                     }
                     
                 } else {
@@ -112,6 +110,7 @@ class AEAnimator : public emp::web::Animate {
                 org_num++;
             }
         }
+        
         update_count++;
     }
 
