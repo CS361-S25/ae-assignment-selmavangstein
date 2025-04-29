@@ -37,7 +37,7 @@ class OrgWorld : public emp::World<Organism> {
      * Grass does not move.
      * Returns the new index of the organism.
      */
-    int moveOrg(int index) {
+    /* int moveOrg(int index) {
         emp::Ptr<Organism> org = ExtractOrganism(index);
         int species = org->GetSpecies();
 
@@ -70,7 +70,85 @@ class OrgWorld : public emp::World<Organism> {
         //grass must stay in place
         AddOrgAt(org, index);
         return index;
+    } */
+
+    /** 
+     * Move an organism based on its species behavior.
+     * Goats move, may eat grass, or stay in place.
+     * Grass does not move.
+     * Returns the new index of the organism.
+     */
+    int moveOrg(int index) {
+        emp::Ptr<Organism> org = ExtractOrganism(index);
+        int species = org->GetSpecies();
+
+        if (species == 1) {
+            return MoveGoat(org, index);
+        }
+
+        // grass must stay in place
+        int newPos = StayPut(org, index);
+        return newPos;
     }
+
+    /** 
+     * The goat attempts to move to a random neighboring cell. It may:
+     * - Eat grass if the cell contains grass.
+     * - Stay in place if the cell contains another goat.
+     * - Move to the empty cell otherwise.
+     */
+    int MoveGoat(emp::Ptr<Organism> goat, int index) {
+        emp::WorldPosition newPos = GetRandomNeighborPos(index);
+        int newPosInt = newPos.GetIndex();
+
+        if (IsOccupied(newPos)) {
+            return HandleOccupiedCell(goat, index, newPos, newPosInt);
+        }
+
+        return MoveToEmpty(goat, newPos, newPosInt);
+    }
+
+    /**
+     * If the occupant is grass (species 0), the goat eats it and moves there.
+     * If it's another goat, the goat stays put.
+     */
+    int HandleOccupiedCell(emp::Ptr<Organism> goat, int index, const emp::WorldPosition& newPos, int newPosInt) {
+        emp::Ptr<Organism> neighborOrg = pop[newPosInt];
+
+        if (neighborOrg->GetSpecies() == 0) {
+            return EatAndMove(goat, newPos, newPosInt, neighborOrg);
+        } else {
+            return StayPut(goat, index);
+        }
+    }
+
+    /**
+     * The goat gains points when it eats the grass, which is then removed from the world.
+     * The goat finally takes the grass's position.
+     */
+    int EatAndMove(emp::Ptr<Organism> goat, const emp::WorldPosition& newPos, int newPosInt, emp::Ptr<Organism> grass) {
+        goat->AddPoints(grass->GetPoints());
+        ExtractOrganism(newPosInt);
+        AddOrgAt(goat, newPos);
+        return newPosInt;
+    }
+
+    /**
+     * Moves the goat to an empty neighboring cell.
+     */
+    int MoveToEmpty(emp::Ptr<Organism> goat, const emp::WorldPosition& newPos, int newPosInt) {
+        AddOrgAt(goat, newPos);
+        return newPosInt;
+    }
+
+    /**
+     * Puts organism back in the same place it was
+     */
+    int StayPut(emp::Ptr<Organism> org, int index) {
+        AddOrgAt(org, index);
+        return index;
+    }
+
 
     /**
      * Check if the organism at position i is dead (has 0 or fewer points). 
