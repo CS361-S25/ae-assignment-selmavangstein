@@ -17,28 +17,68 @@ public:
     Organism(emp::Ptr<emp::Random> _random, double _points = 0.0)
         : points(_points), random(_random) {}
 
-    /** Set current energy/point level. */
+    /** 
+     * Input: a double value representing the amount of points
+     * 
+     * Output: None
+     * 
+     * Set current point level. */
     void SetPoints(double _pts) { points = _pts; }
 
-    /** Add to current energy/point level. */
+    /** 
+     * Input: a double value representing the amount of points
+     * 
+     * Output: None
+     * 
+     * Add to current energy/point level. */
     void AddPoints(double _pts) { points += _pts; }
 
-    /** Get current energy/point level. */
+    /** 
+     * Input: None
+     * 
+     * Output: a double value representing the current point level
+     * 
+     * Get current energy/point level. */
     double GetPoints() const { return points; }
 
-    /** Mark if this organism has moved this update cycle. */
+    /** 
+     * Input: a boolean value
+     * 
+     * Output: None
+     * 
+     * Mark if this organism has moved this update cycle. */
     void SetHasMoved(bool val) { has_moved = val; }
 
-    /** Check if organism has already moved. */
+    /** 
+     * Input: None
+     * 
+     * Output: a boolean value representing if the organism has moved this update cycle
+     * 
+     * Check if organism has already moved. */
     bool HasMoved() const { return has_moved; }
 
-    /** Handle processing behavior (e.g., metabolism, growth). Override in species. */
+    /** 
+     * Input: None
+     * 
+     * Output: None
+     * 
+     * Handle processing behavior (e.g., metabolism, growth). Override in species. */
     virtual void Process() { AddPoints(1000); }
 
-    /** Check if ready to reproduce. Override in species. */
+    /** 
+     * Input: None
+     * 
+     * Output: Nullptr
+     * 
+     * Check if ready to reproduce. Override in species. */
     virtual emp::Ptr<Organism> CheckReproduction() { return nullptr; }
 
-    /** Return species ID. Override in species. */
+    /** 
+     * Input: None
+     * 
+     * Output: -1
+     * 
+     * Return species ID. Override in species. */
     virtual int GetSpecies() const { return -1; }
 
     virtual ~Organism() = default;

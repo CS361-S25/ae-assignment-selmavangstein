@@ -12,17 +12,32 @@ public:
     Goat(emp::Ptr<emp::Random> _random, double _points = 0.0)
         : Organism(_random, _points) {}
 
-    /** Goats lose energy each update cycle. */
+    /** 
+     * Input: None
+     * 
+     * Output: None
+     * 
+     * Goats lose energy each update cycle. */
     void Process() override {
         AddPoints(-50);  
     }
 
-    /** Species ID for goats is 1. */
+    /** 
+     * Input: None
+     * 
+     * Output: 1
+     * 
+     * Species ID for goats is 1. */
     int GetSpecies() const override {
         return 1;
     }
 
-    /** Reproduce if enough energy is available. Offspring starts with some energy. */
+    /** 
+     * Input: None
+     * 
+     * Output: produced offspring or nullptr
+     * 
+     * Reproduce if enough energy is available. Offspring starts with some energy. */
     emp::Ptr<Organism> CheckReproduction() override {
         if (points > 1000) {
             emp::Ptr<Goat> offspring = new Goat(*this);

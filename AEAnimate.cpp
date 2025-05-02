@@ -65,10 +65,14 @@ class AEAnimator : public emp::web::Animate {
         world.SetPopStruct_Grid(num_w_boxes, num_h_boxes);
     }
 
+    /**
+     * Input: None
+     * 
+     * Output: None
+     * 
+     * Purpose: seed the world with some grass and goats to start according to some initial probabilities
+     */
     void seedWorld() {
-        /*
-        * seed the world with some grass and goats to start according to some initial probabilities
-        */
         float prob_grass = 0.1;
         float prob_goat = 0.03;
         for (int i = 0; i < num_w_boxes * num_h_boxes; i++) {
@@ -80,10 +84,14 @@ class AEAnimator : public emp::web::Animate {
         }
     }
 
+    /**
+     * Input: None
+     * 
+     * Output: None
+     * 
+     * Purpose: apply the rules of the world
+     */
     void DoFrame() override {
-        /*
-        * apply the rules of the world
-        */
         canvas.Clear();
 
         if (update_count != 0){
